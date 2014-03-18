@@ -1,0 +1,9 @@
+/* CSS for DsdXBlock */
+
+.dsd_block .count {
+    font-weight: bold;
+}
+
+.dsd_block p {
+    cursor: pointer;
+}
