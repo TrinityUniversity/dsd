@@ -1,26 +1,64 @@
 """TO-DO: Write a description of what this XBlock is."""
 
 import pkg_resources
+from jinja2 import Template
 
 from xblock.core import XBlock
-from xblock.fields import Scope, Integer
+from xblock.fields import Scope, Integer, String
 from xblock.fragment import Fragment
 
+DISPLAY_HELP = "This name appears in the horizontal navigation at the top of the page."
+DISPLAY_DEFAULT = "Datastructure Diagram"
+QUESTION_HELP = "The question that will be shown to the user."
+QUESTION_DEFAULT = "Draw a singularly linked list with the values [1,2,3,4]."
 
 class DsdXBlock(XBlock):
     """
         TO-DO: document what your XBlock does.
     """
+    display_name = String(
+        display_name="Display Name",
+        help=DISPLAY_HELP,
+        scope=Scope.settings,
+        default=DISPLAY_DEFAULT,
+    )
+
+    question = String(
+        display_name="Question",
+        help=QUESTION_HELP,
+        scope=Scope.content,
+        default=QUESTION_DEFAULT,
+    )
 
     def studio_view(self, context=None):
-        return student_view(self, context)
+        if context == None:
+            # Can't access properties of fields (i.e. self.question.help) so must
+            # resort to building our out dictionary
+            context = {
+                "question" : { 
+                    "help" : QUESTION_HELP,
+                    "default": QUESTION_DEFAULT
+                }
+            }
+
+        # frag = Fragment(html.format(self=self))
+        html = Template(self.resource_string("templates/html/dsd_edit.html"))
+        frag = Fragment(html.render(context))
+        frag.add_css(self.resource_string("public/css/dsd.css"))
+        frag.add_javascript(self.resource_string("public/libs/kinetic/5.0.1/kinetic.min.js"))
+        frag.add_javascript(self.resource_string("public/js/src/dsd_common.js"))
+        frag.add_javascript(self.resource_string("public/js/src/dsd_edit.js"))
+        frag.initialize_js('DsdXBlock')
+        print self.runtime.local_resource_url(self, 'public/img/SingleNode.jpg')
+        return frag
 
     def student_view(self, context=None):
-        html = self.resource_string("static/html/dsd.html")
+        html = self.resource_string("templates/html/dsd.html")
         frag = Fragment(html.format(self=self))
-        frag.add_css(self.resource_string("static/css/dsd.css"))
-        frag.add_javascript(self.resource_string("static/libs/kinetic/5.0.1/kinetic.min.js"))
-        frag.add_javascript(self.resource_string("static/js/src/dsd.js"))
+        frag.add_css(self.resource_string("public/css/dsd.css"))
+        frag.add_javascript(self.resource_string("public/libs/kinetic/5.0.1/kinetic.min.js"))
+        frag.add_javascript(self.resource_string("public/js/src/dsd_common.js"))
+        frag.add_javascript(self.resource_string("public/js/src/dsd.js"))
         frag.initialize_js('DsdXBlock')
         return frag
 
@@ -33,14 +71,10 @@ class DsdXBlock(XBlock):
 
     @staticmethod
     def workbench_scenarios():
-        """A canned scenario for display in the workbench."""
-        return [
-            ("DsdXBlock",
-             """<vertical_demo>
-                <dsd/>
-                </vertical_demo>
-             """),
-        ]
+        """
+            A canned scenario for display in the workbench.
+        """
+        return [("DsdXBlock", "<dsd/>"),]
 
     # Fields are defined on the class.  You can access them in your code as
     # self.<fieldname>.
