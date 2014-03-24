@@ -46,8 +46,8 @@ class DsdXBlock(XBlock):
         frag = Fragment(html.render(context))
         frag.add_css(self.resource_string("public/css/dsd.css"))
         frag.add_javascript(self.resource_string("public/libs/kinetic/5.0.1/kinetic.min.js"))
-        frag.add_javascript(self.resource_string("public/js/src/dsd_common.js"))
-        frag.add_javascript(self.resource_string("public/js/src/dsd_edit.js"))
+        frag.add_javascript(self.resource_string("public/js/dsd_common.js"))
+        frag.add_javascript(self.resource_string("public/js/dsd_edit.js"))
         frag.initialize_js('DsdXBlock')
         print self.runtime.local_resource_url(self, 'public/img/SingleNode.jpg')
         return frag
@@ -57,8 +57,8 @@ class DsdXBlock(XBlock):
         frag = Fragment(html.format(self=self))
         frag.add_css(self.resource_string("public/css/dsd.css"))
         frag.add_javascript(self.resource_string("public/libs/kinetic/5.0.1/kinetic.min.js"))
-        frag.add_javascript(self.resource_string("public/js/src/dsd_common.js"))
-        frag.add_javascript(self.resource_string("public/js/src/dsd.js"))
+        frag.add_javascript(self.resource_string("public/js/dsd_common.js"))
+        frag.add_javascript(self.resource_string("public/js/dsd.js"))
         frag.initialize_js('DsdXBlock')
         return frag
 
