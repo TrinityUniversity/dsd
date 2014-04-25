@@ -85,7 +85,7 @@ var dsd = (function(){
 
     /*
      *  backgroundListeners()
-     *  - Listener for background
+     *  - Listeners for background
      */
     function backgroundListeners(){
         background.on("click", backgroundMouseClick);
@@ -98,6 +98,16 @@ var dsd = (function(){
             
         addNode(x, y, null);
         stage.draw();
+    }
+
+    function backgroundMouseMove(e){
+        if(draggingLine){
+            var mousePos = stage.getPointerPosition();
+            var x1 = dragLine.points()[0]
+            var y1 = dragLine.points()[1]
+            dragLine.points([x1, y1, mousePos.x, mousePos.y]);
+            animLayer.draw();
+        }
     }
     /*
      *  connectDotListener()
@@ -277,14 +287,7 @@ var dsd = (function(){
             strokeWidth: 4,
             name: "background"
         });
-        background.on('mousemove', function() {
-            if(draggingLine){
-                var x1 = dragLine.points()[0]
-                var y1 = dragLine.points()[1]
-                dragLine.points([x1, y1, x, y]);
-                animLayer.draw();
-            }
-        });
+        background.on('mousemove', backgroundMouseMove);
         background.on('mouseup', function(){
             if(draggingLine){
                 selectedDot.setStroke('black');
