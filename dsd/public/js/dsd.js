@@ -6,17 +6,7 @@ function DsdXBlock(runtime, element) {
     }
 
     var handlerUrl = runtime.handlerUrl(element, 'increment_count');
-
-    $('.save', element).click(function(eventObject) {
-        $.ajax({
-            type: "POST",
-            url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
-            success: updateCount
-        });
-    });
-
     $(function ($) {
-        // dsd.initDsd();
+        dsd.init(runtime, element);
     });
 }

@@ -5,18 +5,22 @@ function DsdXBlock(runtime, element) {
         $('.count', element).text(result.count);
     }
 
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
+    var handlerUrl = runtime.handlerUrl(element, 'save_teacher');
 
-    $('.save', element).click(function(eventObject) {
+    $('.save-button', element).click(function(eventObject) {
         $.ajax({
             type: "POST",
             url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
+            data: JSON.stringify(
+                {   "stage": dsd.stage(),
+                    "nodes": dsd.nodes(),
+                    "lines": dsd.lines()
+                }),
             success: updateCount
         });
     });
 
     $(function ($) {
-        dsd.init();
+        dsd.init(runtime, element);
     });
 }

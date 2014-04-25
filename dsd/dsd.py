@@ -1,10 +1,11 @@
 """TO-DO: Write a description of what this XBlock is."""
 
+import json
 import pkg_resources
 from jinja2 import Template
 
 from xblock.core import XBlock
-from xblock.fields import Scope, Integer, String
+from xblock.fields import Scope, Integer, String, Dict
 from xblock.fragment import Fragment
 
 DISPLAY_HELP = "This name appears in the horizontal navigation at the top of the page."
@@ -29,6 +30,18 @@ class DsdXBlock(XBlock):
         scope=Scope.content,
         default=QUESTION_DEFAULT,
     )
+
+    teacher_solution = Dict(
+        display_name=None,
+        help=None,
+        scope=Scope.content,
+        default=None)
+
+    stage = Dict(
+        display_name=None,
+        help=None,
+        scope=Scope.user_state,
+        default=None)
 
     def studio_view(self, context=None):
         if context == None:
@@ -69,6 +82,22 @@ class DsdXBlock(XBlock):
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
+    @XBlock.json_handler
+    def save_teacher(self, data, suffix=''):
+        self.teacher_solution = data
+        # self.stage = data.get("stage")
+
+    @XBlock.json_handler
+    def get_stage(self, data, suffix=''):
+        if self.stage == None:
+            return ""
+        else:
+            return self.stage
+
+    @XBlock.json_handler
+    def save_stage(self, data, suffix):
+        self.stage = data;
+        
     @staticmethod
     def workbench_scenarios():
         """
