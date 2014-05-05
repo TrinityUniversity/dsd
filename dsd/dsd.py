@@ -62,7 +62,6 @@ class DsdXBlock(XBlock):
         frag.add_javascript(self.resource_string("public/js/dsd_common.js"))
         frag.add_javascript(self.resource_string("public/js/dsd_edit.js"))
         frag.initialize_js('DsdXBlock')
-        print self.runtime.local_resource_url(self, 'public/img/SingleNode.jpg')
         return frag
 
     def student_view(self, context=None):
@@ -95,9 +94,19 @@ class DsdXBlock(XBlock):
             return self.stage
 
     @XBlock.json_handler
-    def save_stage(self, data, suffix):
+    def save_stage(self, data, suffix=''):
         self.stage = data;
-        
+    
+    # url_prefix()
+    #
+    # Returns the prefix for the URL so that JS can access static resources
+    # on different runtimes. (E.g. Sandbox has prefix /resource/dsd/ while edx-studio
+    # has prefix /xblock/resource/dsd/)
+    #
+    @XBlock.json_handler
+    def url_prefix(self, data, suffix=''):
+        return self.runtime.local_resource_url(self, "")
+
     @staticmethod
     def workbench_scenarios():
         """

@@ -5,6 +5,7 @@ var dsd = (function(){
     var stage;
     var mainLayer;
 
+    var urlPrefix;
     /*
      *  init(runtime, element)
      *  - Initializes DSD application
@@ -14,7 +15,26 @@ var dsd = (function(){
     function init(runtime, element){
         g.runtime = runtime;
         g.element = element;
+        getUrlPrefix();
         loadStage();
+    }
+    
+    /*
+     *  urlPrefix()
+     *  - Gets the URL prefix for the runtime to be used when
+     *  - referencing static content (i.e. images)
+     */
+    function getUrlPrefix(){
+        var handlerUrl = g.runtime.handlerUrl(g.element, 'url_prefix');
+        $.ajax({
+            type: "POST",
+            url: handlerUrl,
+            data: JSON.stringify({"hello": "world"}),
+            async: false,
+        }).done(function(data){
+            console.log(data);
+            urlPrefix = data;
+        });
     }
 
     /*
@@ -43,6 +63,7 @@ var dsd = (function(){
      *  - Re-builds an existing stage from data
      */
     function buildStage(data){
+        // Rebuild an existing ribbon
         function buildRibbon(){
             var saveImageObj = new Image();
             saveImageObj.onload = function(){
@@ -53,7 +74,7 @@ var dsd = (function(){
                 });
                 stage.draw();
             }
-            saveImageObj.src = '/xblock/resource/dsd/public/img/floppy.png';
+            saveImageObj.src = urlPrefix + 'public/img/floppy.png';
         }
 
         stage = Kinetic.Node.create(JSON.stringify(data), "dsd_block");
@@ -103,7 +124,7 @@ var dsd = (function(){
                 stage.find(".ribbon").add(saveImage);   
                 stage.draw();
             }
-            saveImageObj.src = '/xblock/resource/dsd/public/img/floppy.png';
+            saveImageObj.src = urlPrefix + 'public/img/floppy.png';
         
             ribbon.add(background);
             mainLayer.add(ribbon);
